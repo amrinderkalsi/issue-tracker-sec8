@@ -4,7 +4,7 @@ class IssueFilter extends Component {
     render() { 
         return ( 
             <div>
-                This is a placeholder for IssueFilter
+                This is a placeholder for Issue Filter
             </div>
          );
     }
