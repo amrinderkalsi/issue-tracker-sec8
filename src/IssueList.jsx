@@ -2,20 +2,21 @@ import { Component } from 'react';
 import IssueFilter from './IssueFilter';
 import IssueTable from './IssueTable';
 import IssueAdd from './IssueAdd';
+
 class IssueList extends Component {
   constructor() {
     super();
     this.state = {
-      issues: []
-    }
+      issues: [],
+    };
   }
 
   componentDidMount() {
     // GraphQl query for fetching the list of issues
-    fetch('/graphql', { 
+    fetch('/graphql', {
       method: 'POST',
       headers: {
-        'content-type': 'application/json'
+        'content-type': 'application/json',
       },
       body: JSON.stringify({
         query: `query Query {
@@ -28,13 +29,12 @@ class IssueList extends Component {
             status
             title
           }
-        }`
-      })
+        }`,
+      }),
     })
-      .then(res => res.json())
-      .then(body => {
-        console.log(body);
-        body.data.issueList.forEach(issue => {
+      .then((res) => res.json())
+      .then((body) => {
+        body.data.issueList.forEach((issue) => {
           issue.created = new Date(issue.created);
           if (issue.completionDate) {
             issue.completionDate = new Date(issue.completionDate);
@@ -46,10 +46,10 @@ class IssueList extends Component {
 
   createIssue = (issue) => {
     // GraphQL Mutation for creating the issue
-    fetch('/graphql', { 
+    fetch('/graphql', {
       method: 'POST',
       headers: {
-        'content-type': 'application/json'
+        'content-type': 'application/json',
       },
       body: JSON.stringify({
         query: `mutation Mutation($issue: IssueInputs) {
@@ -62,19 +62,19 @@ class IssueList extends Component {
             status
             title
           }
-        }`, 
-        variables: {issue}
-      })
+        }`,
+        variables: { issue },
+      }),
     })
-      .then(res => res.json())
-      .then(body => {
-        console.log(body);
+      .then((res) => res.json())
+      .then((body) => {
         body.data.issueAdd.created = new Date(body.data.issueAdd.created);
-          if (body.data.issueAdd.completionDate) {
-            body.data.issueAdd.completionDate = new Date(body.data.issueAdd.completionDate);
-          }
-          const newIssueArray = [...this.state.issues, body.data.issueAdd];
-          this.setState({ issues: newIssueArray});
+        if (body.data.issueAdd.completionDate) {
+          body.data.issueAdd.completionDate = new Date(body.data.issueAdd.completionDate);
+        }
+        const { issues } = this.state;
+        const newIssueArray = [...issues, body.data.issueAdd];
+        this.setState({ issues: newIssueArray });
       });
 
     // Rest API POST call for creating the issue
@@ -99,19 +99,21 @@ class IssueList extends Component {
     //     res.json().catch(err => {console.log(err)});
     //   }
     // }).catch(error => console.log(error));
+  };
+
+  render() {
+    const { issues } = this.state;
+    return (
+      <div>
+        <h1>Issue Tracker</h1>
+        <IssueFilter />
+        <hr />
+        <IssueTable issues={issues} />
+        <hr />
+        <IssueAdd createIssue={this.createIssue} />
+      </div>
+    );
   }
-    render() { 
-      return ( 
-          <div>
-              <h1>Issue Tracker</h1>
-              <IssueFilter />
-              <hr />
-              <IssueTable issues={this.state.issues}/>
-              <hr />
-              <IssueAdd createIssue={this.createIssue} />
-          </div>
-        );
-    }
 }
- 
+
 export default IssueList;

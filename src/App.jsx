@@ -2,8 +2,7 @@ import { Component } from 'react';
 import IssueList from './IssueList';
 
 class App extends Component {
-
-  render(){
+  render() {
     return (
       <div className="App">
         <IssueList />
