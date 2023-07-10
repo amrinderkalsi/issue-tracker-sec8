@@ -12,6 +12,7 @@
         "react/react-in-jsx-scope": "off",
         "react/prop-types": "off",
         "react/prefer-stateless-function": "off",
-        "no-param-reassign": "off"
+        "no-param-reassign": "off",
+        "import/no-extraneous-dependencies": "off"
     }
 }
